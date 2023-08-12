@@ -3,6 +3,8 @@
 import argparse
 import glob
 import os
+import mlflow
+from mlflow import sklearn
 
 import pandas as pd
 
@@ -12,7 +14,8 @@ from sklearn.linear_model import LogisticRegression
 # define functions
 def main(args):
     # TO DO: enable autologging
-
+    mlflow.start_run()
+    mlflow.sklearn.autolog()
 
     # read data
     df = get_csvs_df(args.training_data)
@@ -23,6 +26,8 @@ def main(args):
     # train model
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
 
+    # end run
+    mlflow.end_run()
 
 def get_csvs_df(path):
     if not os.path.exists(path):
