@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 
 # define functions
 def main(args):
@@ -31,6 +32,7 @@ def main(args):
 
     # end run
     mlflow.end_run()
+
 
 def get_csvs_df(path):
     if not os.path.exists(path):
@@ -54,11 +56,18 @@ def split_data(df):
     return train_test_split(X, y, test_size=0.3, random_state=0)
     
 
-
 def train_model(reg_rate, X_train, X_test, y_train, y_test):
     # train model
-    LogisticRegression(C=1/reg_rate, solver="liblinear").fit(X_train, y_train)
-
+    model = LogisticRegression(C=1/reg_rate, solver="liblinear")
+    model.fit(X_train, y_train)
+    
+    # Predict on the test set
+    y_pred = model.predict(X_test)
+    
+    # Compute accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    return accuracy
+    
 
 def parse_args():
     # setup arg parser
