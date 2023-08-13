@@ -8,12 +8,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Check out repo
-      uses: actions/checkout@main
+      uses: actions/checkout@v2
+
     - name: Install az ml extension
-      run: az extension add -n ml -y
+      run: |
+        az extension add -n ml -y
+        az extension list
+
     - name: Azure login
       uses: azure/login@v1
       with:
         creds: ${{secrets.AZURE_CREDENTIALS}}
+
+    - name: Set Azure ML workspace context
+      run: az ml folder attach -w mlops-exercise -g prince-resgrp
+
+    - name: Submit Azure ML job
+      run: az ml run submit -f job.yml -c new-compute
+
+    - name: Azure logout
+      run: az logout
 
 
